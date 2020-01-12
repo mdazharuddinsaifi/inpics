@@ -8,64 +8,36 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
 
 export default function HomeScreen() {
+  let screenWidth = Dimensions.get('window').width;
+  let screenHeight = Dimensions.get('window').height;
   return (
-    <View style={styles.container}>
       <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
-
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
-
-          <Text style={styles.getStartedText}>Get started by opening</Text>
-
-          <View
-            style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
-          </View>
-
-          <Text style={styles.getStartedText}>
-            Change this text and your app will automatically reload.
-          </Text>
-        </View>
-
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>
-              Help, it didn’t automatically reload!
+        horizontal={false}
+        pagingEnabled={true}
+      >
+        
+          <View style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight}}>
+            <Text style={{color: 'white'}}>
+              hello world
             </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+          <View style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight, backgroundColor: 'blue'}}>
+            <Text style={{color: 'white'}}>
+              hello world2
+            </Text>
+          </View>
+          <View style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight, backgroundColor: 'yellow'}}>
+            <Text style={{color: 'white'}}>
+              hello world3
+            </Text>
+          </View>
       </ScrollView>
-
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>
-          This is a tab bar. You can edit it in:
-        </Text>
-
-        <View
-          style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>
-            navigation/MainTabNavigator.js
-          </MonoText>
-        </View>
-      </View>
-    </View>
   );
 }
 
@@ -109,6 +81,12 @@ function handleHelpPress() {
 }
 
 const styles = StyleSheet.create({
+  scrollViewStyle: {
+    backgroundColor: 'black',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

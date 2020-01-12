@@ -7,6 +7,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import NewsImageListScreen from '../screens/newsImageList';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -15,13 +16,14 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: NewsImageListScreen,
   },
   config
 );
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
+  tabBarVisible: false,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
