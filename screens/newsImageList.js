@@ -6,10 +6,18 @@ import {
   Text,
   View,
   Dimensions,
-  FlatList
+  FlatList,
+  RefreshControl
 } from 'react-native';
 
 import { getAllNewsData } from '../networks/network';
+
+const init_data = {
+                    isLoading: true,
+                    url: 'https://api.truemuch.com/apis/v1/all/feed',
+                    data: [],
+                    refreshing: false
+                  }
 
 export default class NewsImageListScreen extends React.Component {
   constructor(props) {
@@ -17,14 +25,8 @@ export default class NewsImageListScreen extends React.Component {
     this.state = {
       isLoading: true,
       url: 'https://api.truemuch.com/apis/v1/all/feed',
-      data: [ 
-        {
-          feed: {
-            images: ['https://i.imgur.com/2ruEVym.png'],
-            url_image: 'https://i.imgur.com/2ruEVym.png'
-          }
-        }
-      ]
+      data: [],
+      refreshing: false
     }
   }
   static navigationOptions = {
@@ -46,52 +48,66 @@ export default class NewsImageListScreen extends React.Component {
 
   updateDataAndUrl = (nurl, ndata) => {
     let data = this.state.data;
-    this.setState({url: nurl, data: [...data, ...ndata], isLoading: true});
+    this.setState({url: nurl, data: [...data, ...ndata], isLoading: true, refreshing: false});
+
   };
 
+
+
+  onRefresh = () => {
+    this.setState(init_data);
+    getAllNewsData(init_data.url, (nurl, ndata) => {this.updateDataAndUrl(nurl, ndata)});
+  }
+
   render() {
+//    const [refreshing, setRefreshing] = React.useState(false);
     let screenWidth = Dimensions.get('window').width;
     let screenHeight = Dimensions.get('window').height;
     return (
-      <ScrollView
-        horizontal={false}
-        pagingEnabled={true}
-        onScroll={({nativeEvent}) => {
-          if (this.isCloseToBottom(nativeEvent) && this.state.isLoading) {
-            this.setState({isLoading: false})
-            getAllNewsData(this.state.url, (nurl, ndata) => {this.updateDataAndUrl(nurl, ndata)});
-            console.log('reached');
-          }
-        }}
-      >
-        {this.state.data.map((item, index) => {
-          console.log(item.feed.images, index, 'this is imag urls');
-          return (
-            <View key={index + 'newsData'} style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight}}>
-              <ScrollView
-                horizontal={true}
-                pagingEnabled={true}
-                showsHorizontalScrollIndicator={true}
-              > 
-                {item.feed.images.map((item, index) => {
-                  console.log(item, 'this is single image');
-                  return (
-                    <View key={index + 'newsImages'} style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight}}>
-                      <Image 
-                        source={{uri: item}} 
-                        style={{height: screenHeight, width: screenWidth,resizeMode: 'contain',backgroundColor: 'black'}} />
-                    </View>
-                  )
-                })}
-              </ScrollView>
-              {/* <Text style={{color: 'white'}}>
-                hello world
-              </Text> */}
-            </View>  
-          );
-        })}
-      </ScrollView>
-  );
+       <View
+        style={{flex: 1, backgroundColor: 'black'}}
+       >
+          <ScrollView
+                  horizontal={false}
+                  pagingEnabled={true}
+                  onScroll={({nativeEvent}) => {
+                    if (this.isCloseToBottom(nativeEvent) && this.state.isLoading) {
+                      this.setState({isLoading: false})
+                      getAllNewsData(this.state.url, (nurl, ndata) => {this.updateDataAndUrl(nurl, ndata)});
+                      console.log('reached');
+                    }
+                  }}
+                  refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh}  />}
+
+                >
+                  {this.state.data.map((item, index) => {
+                    return (
+                      <View key={index + 'newsData'} style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight}}>
+                        <ScrollView
+                          horizontal={true}
+                          pagingEnabled={true}
+                          showsHorizontalScrollIndicator={true}
+                        >
+                          {item.feed.images.map((item, index) => {
+          //                  console.log(item, 'this is single image');
+                            return (
+                              <View key={index + 'newsImages'} style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight}}>
+                                <Image
+                                  source={{uri: item}}
+                                  style={{height: screenHeight, width: screenWidth,resizeMode: 'contain',backgroundColor: 'black'}} />
+                              </View>
+                            )
+                          })}
+                        </ScrollView>
+                        {/* <Text style={{color: 'white'}}>
+                          hello world
+                        </Text> */}
+                      </View>
+                    );
+                  })}
+                </ScrollView>
+       </View>
+    );
   }
 }
 
