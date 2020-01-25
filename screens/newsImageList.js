@@ -48,6 +48,7 @@ export default class NewsImageListScreen extends React.Component {
 
   updateDataAndUrl = (nurl, ndata) => {
     let data = this.state.data;
+    console.log(ndata)
     this.setState({url: nurl, data: [...data, ...ndata], isLoading: true, refreshing: false});
 
   };
@@ -60,12 +61,16 @@ export default class NewsImageListScreen extends React.Component {
   }
 
   render() {
-//    const [refreshing, setRefreshing] = React.useState(false);
     let screenWidth = Dimensions.get('window').width;
     let screenHeight = Dimensions.get('window').height;
     return (
        <View
-        style={{flex: 1, backgroundColor: 'black'}}
+        style={
+          {
+            flex: 1,
+            backgroundColor: 'black'
+          }
+          }
        >
           <ScrollView
                   horizontal={false}
@@ -89,19 +94,16 @@ export default class NewsImageListScreen extends React.Component {
                           showsHorizontalScrollIndicator={true}
                         >
                           {item.feed.images.map((item, index) => {
-          //                  console.log(item, 'this is single image');
                             return (
                               <View key={index + 'newsImages'} style={{...styles.scrollViewStyle, width: screenWidth, height: screenHeight}}>
                                 <Image
                                   source={{uri: item}}
-                                  style={{height: screenHeight, width: screenWidth,resizeMode: 'contain',backgroundColor: 'black'}} />
+                                  style={{height: screenHeight, width: screenWidth,resizeMode: 'contain',backgroundColor: 'black'}} 
+                                />
                               </View>
                             )
                           })}
                         </ScrollView>
-                        {/* <Text style={{color: 'white'}}>
-                          hello world
-                        </Text> */}
                       </View>
                     );
                   })}
